@@ -30,6 +30,30 @@ void kill_wizards(struct wizard *w){
 
 int check_winner(struct cube* cube){
   /* Fill in */
+	int counterA = 0;
+	int counterB = 0;
+	for(int i = 0; i < cube->teamA_size; i++){
+		if(cube->teamA_wizards[i]->status == 1){
+			counterA++;
+			printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
+		}
+	}
+
+	for(int i = 0; i < cube->teamB_size; i++){
+		if(cube->teamB_wizards[i]->status == 1){
+			counterB++;
+			printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
+		}
+	}
+
+	if(counterA >= cube->teamA_size){
+		printf("Team A lost.\n");
+		return 1;
+	}
+	if(counterB >= cube->teamB_size){
+		printf("Team B lost.\n");
+		return 1;
+	}
 
   return 0;
 }
@@ -141,8 +165,7 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
   return w;
 }
 
-int
-interface(void *cube_ref){
+int interface(void *cube_ref){
   struct cube* cube;
   char *line;
   char *command;
@@ -179,6 +202,7 @@ interface(void *cube_ref){
 	      cube->game_status = 0;
 
 	      /* Start the game */
+				printf("%d\n", check_winner(cube));
 
 	      /* Fill in */
 
@@ -367,8 +391,7 @@ void dostuff(){
   return;
 }
 
-struct room *
-choose_room(struct wizard* w){
+struct room *choose_room(struct wizard* w){
   int newx = 0;
   int newy = 0;
 
@@ -389,8 +412,7 @@ int try_room(struct wizard *w, struct room *oldroom, struct room* newroom){
   return 1;
 }
 
-struct wizard *
-find_opponent(struct wizard* self, struct room *room){
+struct wizard *find_opponent(struct wizard* self, struct room *room){
   struct wizard *other = NULL;
 
   /* Updates room wizards and determines opponent */
