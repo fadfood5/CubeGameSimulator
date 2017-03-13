@@ -191,7 +191,7 @@ int interface(void *cube_ref){
 			}else if (!strcmp(command, "show")){
 	  		print_cube(cube);
 			}
-      else if (!strcmp(command, "start") || !strcmp(command, "s")){
+      else if (!strcmp(command, "start")){
 	  if (cube->game_status == 1){
 	      fprintf(stderr, "Game is over. Cannot be started again\n");
 	    }
@@ -203,14 +203,18 @@ int interface(void *cube_ref){
 					//Fill in
 					printf("%d\n", check_winner(cube));
 		    }
-		}
-      else if (!strcmp(command, "stop")){
-	  //Stop the game
-	  return 1;
-	}else{
-	  fprintf(stderr, "unknown command %s\n", command);
-	}
+		}else if (!strcmp(command, "stop")){
+		  //Stop the game
+		  return 1;
+		}else if(!strcmp(command, "s")){
+			//do one step
+		}else if(!strcmp(command, "c")){
+			while(check_winner(cube) != 0){
 
+			}
+		}else{
+		  fprintf(stderr, "unknown command %s\n", command);
+		}
       free(line);
     }
 
