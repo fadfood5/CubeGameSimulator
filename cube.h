@@ -20,8 +20,9 @@ struct room {
   int x;
   int y;
   struct wizard *wizards[2];
-
+  
   /* Fill in as required */
+  int lock; //0 for unlocked, 1 for locked
 };
 
 struct cube {
