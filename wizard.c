@@ -87,6 +87,10 @@ void *wizard_func(void *wizard_descr){
 			}
 	  }
 	  /* Fill in */
+		if(check_winner(cube) == 1){
+			kill_wizards();
+			cube->game_status = 0;
+		}
 	}
       /* Thinks about what to do next */
       dostuff();

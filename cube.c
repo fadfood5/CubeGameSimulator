@@ -200,6 +200,7 @@ int interface(void *cube_ref){
 		  }else{
 		      cube->game_status = 0;
 		      //Start the game
+					//Fill in
 					printf("%d\n", check_winner(cube));
 		    }
 		}
@@ -500,9 +501,9 @@ int fight_wizard(struct wizard *self, struct wizard *other, struct room *room){
 
 int free_wizard(struct wizard *self, struct wizard *other, struct room* room){
   int res;
-  /* Computes the results of the unfreeze spell */
+  //Computes the results of the unfreeze spell
   res = rand() % 2;
-  /* The friend is unfrozen */
+  //The friend is unfrozen
   if (res == 0)
     {
       printf("Wizard %c%d in room (%d,%d) unfreezes friend %c%d\n",
