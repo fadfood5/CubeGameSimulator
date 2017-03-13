@@ -23,13 +23,13 @@ void command_line_usage(){
 }
 
 void kill_wizards(struct wizard *w){
-  /* Fill in */
+  //Fill in
 
   return;
 }
 
 int check_winner(struct cube* cube){
-  /* Fill in */
+  //Fill in
 	int counterA = 0;
 	int counterB = 0;
 	for(int i = 0; i < cube->teamA_size; i++){
@@ -159,7 +159,7 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
       }
     }
 
-  /* Fill in */
+  //Fill in
 
 
   return w;
@@ -191,27 +191,20 @@ int interface(void *cube_ref){
 			}else if (!strcmp(command, "show")){
 	  		print_cube(cube);
 			}
-      else if (!strcmp(command, "start")){
+      else if (!strcmp(command, "start") || !strcmp(command, "s")){
 	  if (cube->game_status == 1){
 	      fprintf(stderr, "Game is over. Cannot be started again\n");
 	    }
-	  else if (cube->game_status == 0){
-	      fprintf(stderr, "Game is in progress. Cannot be started again\n");
-	    }
-	  else{
-	      cube->game_status = 0;
-
-	      /* Start the game */
-				printf("%d\n", check_winner(cube));
-
-	      /* Fill in */
-
-
-
-	    }
-	}
+		  else if (cube->game_status == 0){
+		      fprintf(stderr, "Game is in progress. Cannot be started again\n");
+		  }else{
+		      cube->game_status = 0;
+		      //Start the game
+					printf("%d\n", check_winner(cube));
+		    }
+		}
       else if (!strcmp(command, "stop")){
-	  /* Stop the game */
+	  //Stop the game
 	  return 1;
 	}else{
 	  fprintf(stderr, "unknown command %s\n", command);
@@ -335,7 +328,8 @@ int main(int argc, char** argv){
 	  room->wizards[1] = NULL;
 	  room_col[j] = room;
 
-	  /* Fill in */
+	  //Fill in
+		room->lock = 0;
 		}
       cube->rooms[i] = room_col;
     }
@@ -371,7 +365,7 @@ int main(int argc, char** argv){
       cube->teamB_wizards[i] = wizard_descr;
   }
 
-  /* Fill in */
+  //Fill in
 
 
   /* Goes in the interface loop */
@@ -408,15 +402,20 @@ struct room *choose_room(struct wizard* w){
 }
 
 int try_room(struct wizard *w, struct room *oldroom, struct room* newroom){
-  /* Fill in */
-  return 1;
+  //Fill in
+	if(newroom->lock == 1){
+		printf("Request denied. Room locked\n");
+		return 0;
+	}else{
+  	return 1;
+	}
 }
 
 struct wizard *find_opponent(struct wizard* self, struct room *room){
   struct wizard *other = NULL;
 
-  /* Updates room wizards and determines opponent */
-  if ((room->wizards[0] == self)){
+  //Updates room wizards and determines opponent
+  if (room->wizards[0] == self){
       other = room->wizards[1];
     }
   else if (room->wizards[1] == self){
@@ -444,26 +443,30 @@ void switch_rooms(struct wizard *w, struct room *oldroom, struct room* newroom){
       exit(1);
     }
 
-  /* Fill in */
-
-  /* Updates room wizards and determines opponent */
+  //Fill in
+	if(oldroom->lock == 1){
+		oldroom->lock = 0;
+	}
+  //Updates room wizards and determines opponent
   if (newroom->wizards[0] == NULL){
       newroom->wizards[0] = w;
       other = newroom->wizards[1];
-    }
-  else if (newroom->wizards[1] == NULL){
+    }else if (newroom->wizards[1] == NULL){
       newroom->wizards[1] = w;
       other = newroom->wizards[0];
-    }
-  else /* This should never happen */
-  	{
+    }else{
       printf("Wizard %c%d in room (%d,%d) gets in a room already filled with people!\n",
 	     w->team, w->id, newroom->x, newroom->y);
       print_cube(w->cube);
       exit(1);
     }
 
-  /* Sets self's location to current room */
+	//Lock if two wizards are in room
+	if(newroom->wizards[0] != NULL && newroom->wizards[1] != NULL){
+		newroom->lock = 1;
+	}
+
+  //Sets self's location to current room
   w->x = newroom->x;
   w->y = newroom->y;
 }
@@ -479,7 +482,7 @@ int fight_wizard(struct wizard *self, struct wizard *other, struct room *room){
       printf("Wizard %c%d in room (%d,%d) freezes enemy %c%d\n",
 	     self->team, self->id, room->x, room->y,
 	     other->team, other->id);
-      /* Fill in */
+      //Fill in
     }
 
   /* Self freezes and release the lock */
@@ -487,7 +490,7 @@ int fight_wizard(struct wizard *self, struct wizard *other, struct room *room){
       printf("Wizard %c%d in room (%d,%d) gets frozen by enemy %c%d\n",
 	     self->team, self->id, room->x, room->y,
 	     other->team, other->id);
-      /* Fill in */
+      //Fill in
       return 1;
     }
   return 0;
@@ -503,7 +506,7 @@ int free_wizard(struct wizard *self, struct wizard *other, struct room* room){
       printf("Wizard %c%d in room (%d,%d) unfreezes friend %c%d\n",
 	     self->team, self->id, room->x, room->y,
 	     other->team, other->id);
-      /* Fill in */
+      //Fill in
     }
   /* The spell failed */
   printf("Wizard %c%d in room (%d,%d) fails to unfreeze friend %c%d\n",
