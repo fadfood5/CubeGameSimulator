@@ -414,16 +414,16 @@ int try_room(struct wizard *w, struct room *oldroom, struct room* newroom){
   	if(w->status == 0){
 		if(newroom->lock == 1){		//Room locked
 			printf("Request denied. Room locked\n");
-			return 0;
+			return 1;
 		}
 
 		else{
-			return 1;		//Room unlocked and wizard isn't frozen
+			return 0;		//Room unlocked and wizard isn't frozen
 		}
 	}
 	
 	else{
-  	return 0;		//Wizard frozen
+  	return 1;		//Wizard frozen, continues trying to get room
 	}
 }
 
