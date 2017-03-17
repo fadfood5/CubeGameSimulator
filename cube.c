@@ -373,7 +373,7 @@ int main(int argc, char** argv){
   }
 
   //Fill in
-
+	//Double for loop to set the initial value of lock room to 1 if 2 wizards spawn in the room
 
   /* Goes in the interface loop */
   res = interface(cube);
