@@ -48,10 +48,12 @@ int check_winner(struct cube* cube){
 
 	if(counterA >= cube->teamA_size){
 		printf("Team A lost.\n");
+		print_cube(cube);
 		return 1;
 	}
 	if(counterB >= cube->teamB_size){
 		printf("Team B lost.\n");
+		print_cube(cube);
 		return 1;
 	}
 
