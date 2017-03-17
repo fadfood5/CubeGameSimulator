@@ -408,11 +408,20 @@ struct room *choose_room(struct wizard* w){
 
 int try_room(struct wizard *w, struct room *oldroom, struct room* newroom){
   //Fill in
-	if(newroom->lock == 1){
-		printf("Request denied. Room locked\n");
-		return 0;
-	}else{
-  	return 1;
+  /*Checks to see if wizard is not frozen*/
+  	if(w->status == 0){
+		if(newroom->lock == 1){		//Room locked
+			printf("Request denied. Room locked\n");
+			return 0;
+		}
+
+		else{
+			return 1;		//Room unlocked and wizard isn't frozen
+		}
+	}
+	
+	else{
+  	return 0;		//Wizard frozen
 	}
 }
 
