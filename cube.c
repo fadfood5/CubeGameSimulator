@@ -203,7 +203,7 @@ int interface(void *cube_ref){
 		      cube->game_status = 0;
 		      //Start the game
 					//Fill in
-					printf("%d\n", check_winner(cube));
+					//Initialize threads and semaphores to start game
 		    }
 		}else if (!strcmp(command, "stop")){
 		  //Stop the game
