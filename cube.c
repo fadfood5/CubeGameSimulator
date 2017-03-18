@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <semaphore.h>
 
 #include "cube.h"
 #include "wizard.h"
