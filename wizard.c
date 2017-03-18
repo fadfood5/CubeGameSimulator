@@ -53,7 +53,7 @@ void *wizard_func(void *wizard_descr){
 	     oldroom->x, oldroom->y, newroom->x, newroom->y);
 
       /* Fill in */
-
+//Takes the semaphore key
       /* Self is active and has control over both rooms */
       switch_rooms(self, oldroom, newroom);
 
@@ -65,6 +65,7 @@ void *wizard_func(void *wizard_descr){
 	  printf("Wizard %c%d in room (%d,%d) finds nobody around \n",
 		 self->team, self->id, newroom->x, newroom->y);
 	  /* Fill in */
+	      //Semaphore_post
 	}else{
 	  /* Other is from opposite team */
 	  if (other->team != self->team){
@@ -78,6 +79,7 @@ void *wizard_func(void *wizard_descr){
 		  printf("Wizard %c%d in room (%d,%d) finds enemy already frozen\n",
 			 self->team, self->id, newroom->x, newroom->y);
 		}
+		  //sem_post
 	    }
 	  /* Other is from same team */
 	  else{
@@ -85,6 +87,7 @@ void *wizard_func(void *wizard_descr){
 	      if (other->status == 1){
 		  free_wizard(self, other, newroom);
 			}
+		  //sem_post
 	  }
 	  /* Fill in */
 		if(check_winner(cube) == 1){
