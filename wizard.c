@@ -28,9 +28,10 @@ void *wizard_func(void *wizard_descr){
 
   /* Infinite loop */
   while (1){
-	//Sem_wait()
+
       /* Loops until he's able to get a hold on both the old and new rooms */
       while (1){
+	      //sem_wait()
 	  printf("Wizard %c%d in room (%d,%d) wants to go to room (%d,%d)\n",
 		 self->team, self->id, oldroom->x, oldroom->y, newroom->x, newroom->y);
 
