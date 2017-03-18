@@ -66,7 +66,7 @@ void *wizard_func(void *wizard_descr){
 	  printf("Wizard %c%d in room (%d,%d) finds nobody around \n",
 		 self->team, self->id, newroom->x, newroom->y);
 	  /* Fill in */
-	
+
 	}else{
 	  /* Other is from opposite team */
 	  if (other->team != self->team){
@@ -80,7 +80,7 @@ void *wizard_func(void *wizard_descr){
 		  printf("Wizard %c%d in room (%d,%d) finds enemy already frozen\n",
 			 self->team, self->id, newroom->x, newroom->y);
 		}
-		
+
 	    }
 	  /* Other is from same team */
 	  else{
@@ -88,11 +88,11 @@ void *wizard_func(void *wizard_descr){
 	      if (other->status == 1){
 		  free_wizard(self, other, newroom);
 			}
-		
+
 	  }
 	  /* Fill in */
 		if(check_winner(cube) == 1){
-			kill_wizards();
+			kill_wizards(self);
 			cube->game_status = 0;
 		}
 	}

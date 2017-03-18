@@ -10,7 +10,8 @@
 #include <semaphore.h>
 
 #include "cube.h"
-#include "wizard.h"
+//#include "wizard.h"
+#include "wizard.c"
 
 #define DEFAULT_CUBE_SIZE 4
 #define DEFAULT_TEAM_SIZE 5
@@ -163,7 +164,13 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
     }
 
   //Fill in
+	pthread_t thr;
+ 	char *message1 = "Thread 1";
+	int i = pthread_create(&thr, NULL, wizard_func(w), (void*) message1);
+	pthread_join(thr, NULL);
 
+	//Debug
+	printf("Thread: %d\n", i);
 
   return w;
 }
@@ -422,7 +429,7 @@ int try_room(struct wizard *w, struct room *oldroom, struct room* newroom){
 			return 0;		//Room unlocked and wizard isn't frozen
 		}
 	}
-	
+
 	else{
   	return 1;		//Wizard frozen, continues trying to get room
 	}
