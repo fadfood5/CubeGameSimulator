@@ -5,9 +5,9 @@
 #include <ctype.h>
 #include <pthread.h>
 #include <assert.h>
+#include <semaphore.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <semaphore.h>
 
 #include "cube.h"
 #include "wizard.h"
@@ -21,7 +21,6 @@
 #define FALSE 0
 
 sem_t sem;
-int sem_init(sem, 0, 0);
 
 void command_line_usage(){
   fprintf(stderr, "-size <size of cube> -teamA <size of team> -teamB <size of team> -seed <seed value>\n");
@@ -41,14 +40,15 @@ int check_winner(struct cube* cube){
   //Fill in
 	int counterA = 0;
 	int counterB = 0;
-	for(int i = 0; i < cube->teamA_size; i++){
+	int i, j;
+	for(i = 0; i < cube->teamA_size; i++){
 		if(cube->teamA_wizards[i]->status == 1){
 			counterA++;
 			printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
 		}
 	}
 
-	for(int j = 0; j < cube->teamB_size; j++){
+	for(j = 0; j < cube->teamB_size; j++){
 		if(cube->teamB_wizards[j]->status == 1){
 			counterB++;
 			printf("ID: %d Status: %d\n", cube->teamA_wizards[j]->id, cube->teamA_wizards[j]->status);
@@ -392,7 +392,7 @@ int main(int argc, char** argv){
 
   //Fill in
 	//Double for loop to set the initial value of lock room to 1 if 2 wizards spawn in the room
-
+	sem_init(&sem, 0, 0);
   /* Goes in the interface loop */
   res = interface(cube);
 
