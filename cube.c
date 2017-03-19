@@ -174,10 +174,10 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
 	pthread_t thr;
  	char *message1 = "Thread 1";
 	int i;
-	i = pthread_create(&thr, NULL, wizard_func, "A");
-	assert(i);
+	pthread_create(&thr, NULL, wizard_func(w), NULL);
+	//assert(i);
 	pthread_join(thr, NULL);
-	assert(i);
+	//assert(i);
 
 	//Debug
 	printf("Thread: %d\n", i);
