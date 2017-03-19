@@ -20,12 +20,15 @@
 #define TRUE 1
 #define FALSE 0
 
-int rem;
 sem_t sem;
-rem = sem_init(&sem, 1, 0);
+int sem_init(sem, 0, 0);
 
 void command_line_usage(){
   fprintf(stderr, "-size <size of cube> -teamA <size of team> -teamB <size of team> -seed <seed value>\n");
+}
+
+sem_t* getSemaphore(){
+	return &sem;
 }
 
 void kill_wizards(struct wizard *w){
@@ -45,10 +48,10 @@ int check_winner(struct cube* cube){
 		}
 	}
 
-	for(int j = 0; i < cube->teamB_size; i++){
-		if(cube->teamB_wizards[i]->status == 1){
+	for(int j = 0; j < cube->teamB_size; j++){
+		if(cube->teamB_wizards[j]->status == 1){
 			counterB++;
-			printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
+			printf("ID: %d Status: %d\n", cube->teamA_wizards[j]->id, cube->teamA_wizards[j]->status);
 		}
 	}
 
@@ -170,8 +173,11 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
   //Fill in
 	pthread_t thr;
  	char *message1 = "Thread 1";
-	int i = pthread_create(&thr, NULL, wizard_func(w), (void*) message1);
+	int i;
+	i = pthread_create(&thr, NULL, wizard_func, "A");
+	assert(i);
 	pthread_join(thr, NULL);
+	assert(i);
 
 	//Debug
 	printf("Thread: %d\n", i);
