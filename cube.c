@@ -10,7 +10,7 @@
 #include <semaphore.h>
 
 #include "cube.h"
-//#include "wizard.h"
+#include "wizard.h"
 #include "wizard.c"
 
 #define DEFAULT_CUBE_SIZE 4
@@ -19,6 +19,10 @@
 #define HOWBUSY 100000000
 #define TRUE 1
 #define FALSE 0
+
+int rem;
+sem_t sem;
+rem = sem_init(&sem, 1, 0);
 
 void command_line_usage(){
   fprintf(stderr, "-size <size of cube> -teamA <size of team> -teamB <size of team> -seed <seed value>\n");
@@ -41,7 +45,7 @@ int check_winner(struct cube* cube){
 		}
 	}
 
-	for(int i = 0; i < cube->teamB_size; i++){
+	for(int j = 0; i < cube->teamB_size; i++){
 		if(cube->teamB_wizards[i]->status == 1){
 			counterB++;
 			printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
@@ -216,11 +220,11 @@ int interface(void *cube_ref){
 		}else if (!strcmp(command, "stop")){
 		  //Stop the game
 		  return 1;
-		}else if(!strcmp(command, "s")){
-			//do one step
-		}else if(!strcmp(command, "c")){
+		}else if(!strcmp(command, "s") && cube->game_status == 0){
+			sem_post(&sem);
+		}else if(!strcmp(command, "c") && cube->game_status == 0){
 			while(check_winner(cube) != 0){
-
+				sem_post(&sem);
 			}
 		}else{
 		  fprintf(stderr, "unknown command %s\n", command);
