@@ -169,18 +169,13 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
 	return NULL;
       }
     }
-
+	printf("Hi");
   //Fill in
 	pthread_t thr;
- 	char *message1 = "Thread 1";
-	int i;
 	pthread_create(&thr, NULL, wizard_func(w), NULL);
 	//assert(i);
 	pthread_join(thr, NULL);
-	//assert(i);
-
-	//Debug
-	printf("Thread: %d\n", i);
+	//assert(i);§
 
   return w;
 }
@@ -220,8 +215,6 @@ int interface(void *cube_ref){
 		  }else{
 		      cube->game_status = 0;
 		      //Start the game
-					//Fill in
-					//Initialize threads and semaphores to start game
 		    }
 		}else if (!strcmp(command, "stop")){
 		  //Stop the game
@@ -256,7 +249,7 @@ int main(int argc, char** argv){
 
   /* Parse command line and fill:
      teamA_size, timeBsize, cube_size, and seed */
-
+	printf("Hello");
   i = 1;
   while(i < argc) {
       if (!strcmp(argv[i], "-size")) {
@@ -370,7 +363,7 @@ int main(int argc, char** argv){
 						 teamB_size);
 
   assert(cube->teamB_wizards);
-
+	printf("Initializing wizards");
   /* Team A */
   for (i = 0; i < teamA_size; i++){
       if ((wizard_descr = init_wizard(cube, 'A', i)) == NULL){
