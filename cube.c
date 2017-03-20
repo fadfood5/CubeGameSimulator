@@ -20,24 +20,28 @@
 #define TRUE 1
 #define FALSE 0
 
+//int size = 0;
 sem_t sem;
+sem_t ui;
+//int threads = 0;
+//pthread_t thr[1000];
 
 void command_line_usage(){
   fprintf(stderr, "-size <size of cube> -teamA <size of team> -teamB <size of team> -seed <seed value>\n");
 }
 
-sem_t* getSemaphore(){
-	return &sem;
-}
+/*sem_t getSemaphore(){
+	return sem;
+}*/
 
 void kill_wizards(struct wizard *w){
   //Fill in
-
+	pthread_exit(NULL);
   return;
 }
 
 int check_winner(struct cube* cube){
-  //Fill in
+  //Fill in 
 	int counterA = 0;
 	int counterB = 0;
 	int i, j;
@@ -169,13 +173,25 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
 	return NULL;
       }
     }
-	printf("Hi");
   //Fill in
 	pthread_t thr;
-	pthread_create(&thr, NULL, wizard_func(w), NULL);
-	//assert(i);
-	pthread_join(thr, NULL);
-	//assert(i);§
+	int r;
+/*	if(threads < size){
+
+		r = pthread_create(&thr[threads], NULL, wizard_func(w), NULL);
+		threads++;
+		if(r){
+			printf("ERROR; Return code from pthread_create");
+			exit(-1);
+		}	
+	}
+*/
+
+	r = pthread_create(&thr, NULL, wizard_func(w), NULL);
+	if(r){
+		printf("ERROR, Return code from pthread_create");
+		exit(-1);
+	}
 
   return w;
 }
@@ -215,6 +231,7 @@ int interface(void *cube_ref){
 		  }else{
 		      cube->game_status = 0;
 		      //Start the game
+			//sem_init(&sem, 0, 2);
 		    }
 		}else if (!strcmp(command, "stop")){
 		  //Stop the game
@@ -249,7 +266,6 @@ int main(int argc, char** argv){
 
   /* Parse command line and fill:
      teamA_size, timeBsize, cube_size, and seed */
-	printf("Hello");
   i = 1;
   while(i < argc) {
       if (!strcmp(argv[i], "-size")) {
@@ -321,6 +337,8 @@ int main(int argc, char** argv){
       exit(1);
     }
 
+//	size = teamA_size + teamB_size;
+
   /* Creates the cube */
   cube = (struct cube *)malloc(sizeof(struct cube));
   assert(cube);
@@ -363,13 +381,18 @@ int main(int argc, char** argv){
 						 teamB_size);
 
   assert(cube->teamB_wizards);
-	printf("Initializing wizards");
-  /* Team A */
+//	printf("Initializing wizards");
+
+	sem_init(&sem, 0, 1);
+ 	sem_init(&ui, 0, 1);
+	sem_wait(&ui);			//Still causing deadlock on wizard.h have to figure out semaphore combo
+
+ /* Team A */
   for (i = 0; i < teamA_size; i++){
       if ((wizard_descr = init_wizard(cube, 'A', i)) == NULL){
 			  fprintf(stderr, "Wizard initialization failed (Team A number %d)\n", i);
 			  exit(1);
-			}
+	}
       cube->teamA_wizards[i] = wizard_descr;
     }
 
@@ -385,7 +408,7 @@ int main(int argc, char** argv){
 
   //Fill in
 	//Double for loop to set the initial value of lock room to 1 if 2 wizards spawn in the room
-	sem_init(&sem, 0, 0);
+
   /* Goes in the interface loop */
   res = interface(cube);
 

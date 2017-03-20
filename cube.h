@@ -39,7 +39,8 @@ struct cube {
   /* Fill in as required */
 };
 
-extern sem_t* getSemaphore();
+extern sem_t sem;
+extern sem_t ui;
 extern void print_wizard(struct wizard *);
 extern void kill_wizards(struct wizard *);
 extern void print_cube(struct cube *);
