@@ -25,6 +25,9 @@ sem_t sem;
 sem_t ui;
 int threads = 0;
 pthread_t thr[1000];
+int counterA = 0;
+int counterB = 0;
+
 
 void command_line_usage(){
   fprintf(stderr, "-size <size of cube> -teamA <size of team> -teamB <size of team> -seed <seed value>\n");
@@ -38,13 +41,13 @@ void kill_wizards(struct wizard *w){
 
 int check_winner(struct cube* cube){
   //Fill in
-	int counterA = 0;
-	int counterB = 0;
+  	counterA = 0;
+	counterB = 0;
 	int i, j;
 	for(i = 0; i < cube->teamA_size; i++){
 		if(cube->teamA_wizards[i]->status == 1){
 			counterA++;
-//			printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
+	//printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
 		}
 	}
 
@@ -56,13 +59,13 @@ int check_winner(struct cube* cube){
 	}
 
 	if(counterA >= cube->teamA_size){
-		printf("Team A lost.\n");
-		print_cube(cube);
+//		printf("Team A lost.\n");
+//		print_cube(cube);
 		return 1;
 	}
 	if(counterB >= cube->teamB_size){
-		printf("Team B lost.\n");
-		print_cube(cube);
+//		printf("Team B lost.\n");
+//		print_cube(cube);
 		return 1;
 	}
 
@@ -235,11 +238,35 @@ int interface(void *cube_ref){
 		}else if(!strcmp(command, "s") && cube->game_status == 0){
 			sem_post(&sem);
 			sem_wait(&ui);
+			if(check_winner(cube) == 1){
+				if(counterA >= cube->teamA_size){
+					printf("Team A lost!");
+					print_cube(cube);					
+				}
+
+				else if(counterB >= cube->teamB_size){
+					printf("Team B lost!");
+					print_cube(cube);	
+				}
+
+			}
 		}else if(!strcmp(command, "c") && cube->game_status == 0){
-			while(check_winner(cube) != 0){
+			while(check_winner(cube) != 1 && cube->game_status == 0){
 				sem_post(&sem);
 				dostuff();
 				sem_wait(&ui);
+				if(check_winner(cube) == 1){
+					if(counterA >= cube->teamA_size){
+						printf("Team A lost!");
+						print_cube(cube);
+					}
+
+					else if(counterB >= cube->teamB_size){
+						printf("Team B lost!");
+						print_cube(cube);
+					}
+				}
+
 			}
 		}else{
 		  fprintf(stderr, "unknown command %s\n", command);

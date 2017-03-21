@@ -21,6 +21,8 @@ void *wizard_func(void *wizard_descr){
   oldroom = cube->rooms[self->x][self->y];
   assert(oldroom);
 
+
+
   /* Chooses the new room */
   newroom = choose_room(self);
 
@@ -32,12 +34,12 @@ void *wizard_func(void *wizard_descr){
 
 	sem_wait(&sem);
 
-	if(check_winner(cube) == 1){
+/*	if(check_winner(cube) == 1){
 		sem_post(&sem);
 		kill_wizards(self);
 	}
 
-
+*/ //Not needed since we kill all threads in the kill_wizards
 	  if(self->status == 1){ //Puts the frozen wizard to sleep but allows another wizard to go
 		sem_post(&sem); //Example
 		continue;
@@ -103,9 +105,9 @@ void *wizard_func(void *wizard_descr){
 	  }
 	  /* Fill in */
 		if(check_winner(cube) == 1){
-			sem_post(&sem);
-			kill_wizards(self);
 			cube->game_status = 1;
+			sem_post(&ui);
+			kill_wizards(self);
 		}
 	}
 	sem_post(&ui); 
