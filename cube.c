@@ -37,7 +37,7 @@ void kill_wizards(struct wizard *w){
 }
 
 int check_winner(struct cube* cube){
-  //Fill in 
+  //Fill in
 	int counterA = 0;
 	int counterB = 0;
 	int i, j;
@@ -174,12 +174,12 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
 	int r;
 	if(threads < size){
 
-		r = pthread_create(&thr[threads], NULL, wizard_func(w), NULL);
+		r = pthread_create(&thr[threads], NULL, (void*)(*wizard_func), (void *)w);
 		threads++;
 		if(r){
 			printf("ERROR; Return code from pthread_create");
 			exit(-1);
-		}	
+		}
 	}
 
 
@@ -411,7 +411,7 @@ int main(int argc, char** argv){
 		for(j = 0; j < cube_size; j++){
 			if(room->wizards[0] != NULL && room->wizards[1] !=0)
 				room->lock = 1;
-		}		
+		}
 
 	}
 
