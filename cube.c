@@ -44,14 +44,14 @@ int check_winner(struct cube* cube){
 	for(i = 0; i < cube->teamA_size; i++){
 		if(cube->teamA_wizards[i]->status == 1){
 			counterA++;
-			printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
+//			printf("ID: %d Status: %d\n", cube->teamA_wizards[i]->id, cube->teamA_wizards[i]->status);
 		}
 	}
 
 	for(j = 0; j < cube->teamB_size; j++){
 		if(cube->teamB_wizards[j]->status == 1){
 			counterB++;
-			printf("ID: %d Status: %d\n", cube->teamA_wizards[j]->id, cube->teamA_wizards[j]->status);
+//			printf("ID: %d Status: %d\n", cube->teamA_wizards[j]->id, cube->teamA_wizards[j]->status);
 		}
 	}
 
@@ -235,11 +235,10 @@ int interface(void *cube_ref){
 		}else if(!strcmp(command, "s") && cube->game_status == 0){
 			sem_post(&sem);
 			sem_wait(&ui);
-			if(check_winner(cube) == 0)
-				break;
 		}else if(!strcmp(command, "c") && cube->game_status == 0){
 			while(check_winner(cube) != 0){
 				sem_post(&sem);
+				dostuff();
 				sem_wait(&ui);
 			}
 		}else{
@@ -405,7 +404,7 @@ int main(int argc, char** argv){
       cube->teamB_wizards[i] = wizard_descr;
   }
 
-  //Fill in
+  //Fill in 
 	//Double for loop to set the initial value of lock room to 1 if 2 wizards spawn in the room
 	for(i = 0; i < cube_size; i++){
 		for(j = 0; j < cube_size; j++){
@@ -568,9 +567,10 @@ int free_wizard(struct wizard *self, struct wizard *other, struct room* room){
 	  other->status = 0; //Other wizard gets unfrozen
     }
   /* The spell failed */
-  printf("Wizard %c%d in room (%d,%d) fails to unfreeze friend %c%d\n",
+  else{
+	 printf("Wizard %c%d in room (%d,%d) fails to unfreeze friend %c%d\n",
 	 self->team, self->id, room->x, room->y,
 	 other->team, other->id);
-
+	}
   return 0;
 }
