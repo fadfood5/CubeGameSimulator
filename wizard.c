@@ -24,8 +24,6 @@ void *wizard_func(void *wizard_descr){
   /* Chooses the new room */
   newroom = choose_room(self);
 
-	sem_wait(&ui);
-
   /* Infinite loop */
   while (1){
 
@@ -33,10 +31,12 @@ void *wizard_func(void *wizard_descr){
   while (1){
 
 	  if(self->status == 1){ //Puts the frozen wizard to sleep but allows another wizard to go
-		sem_wait(&sem); //Example
-		sem_post(&sem);
+		sem_post(&sem); //Example
+		dostuff();
+		sem_wait(&sem);
 	}
 	sem_wait(&sem); //Ensures all non-frozen wizards wait here until interface goes, and returns to this after one step
+
 	  printf("Wizard %c%d in room (%d,%d) wants to go to room (%d,%d)\n",
 		 self->team, self->id, oldroom->x, oldroom->y, newroom->x, newroom->y);
 
@@ -101,12 +101,12 @@ void *wizard_func(void *wizard_descr){
 			cube->game_status = 1;
 		}
 	}
-      /* Thinks about what to do next */
+	sem_post(&ui); 
+     /* Thinks about what to do next */
       dostuff();
 
       oldroom = newroom;
-      newroom = choose_room(self);
-	sem_post(&ui);	
+      newroom = choose_room(self);	
     }
 
   return NULL;

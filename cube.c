@@ -20,19 +20,15 @@
 #define TRUE 1
 #define FALSE 0
 
-//int size = 0;
+int size = 0;
 sem_t sem;
 sem_t ui;
-//int threads = 0;
-//pthread_t thr[1000];
+int threads = 0;
+pthread_t thr[1000];
 
 void command_line_usage(){
   fprintf(stderr, "-size <size of cube> -teamA <size of team> -teamB <size of team> -seed <seed value>\n");
 }
-
-/*sem_t getSemaphore(){
-	return sem;
-}*/
 
 void kill_wizards(struct wizard *w){
   //Fill in
@@ -174,9 +170,9 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
       }
     }
   //Fill in
-	pthread_t thr;
+//	pthread_t thr; //need thread array
 	int r;
-/*	if(threads < size){
+	if(threads < size){
 
 		r = pthread_create(&thr[threads], NULL, wizard_func(w), NULL);
 		threads++;
@@ -185,14 +181,14 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
 			exit(-1);
 		}	
 	}
-*/
 
-	r = pthread_create(&thr, NULL, wizard_func(w), NULL);
+
+/*	r = pthread_create(&thr, NULL, wizard_func(w), NULL);
 	if(r){
 		printf("ERROR, Return code from pthread_create");
 		exit(-1);
 	}
-
+*/
   return w;
 }
 
@@ -207,6 +203,7 @@ int interface(void *cube_ref){
 
   using_history();
   while (1){
+
       line = readline("cube> ");
       if (line == NULL) continue;
       if (strlen(line) == 0) continue;
@@ -231,16 +228,19 @@ int interface(void *cube_ref){
 		  }else{
 		      cube->game_status = 0;
 		      //Start the game
-			//sem_init(&sem, 0, 2);
 		    }
 		}else if (!strcmp(command, "stop")){
 		  //Stop the game
 		  return 1;
 		}else if(!strcmp(command, "s") && cube->game_status == 0){
 			sem_post(&sem);
+			sem_wait(&ui);
+			if(check_winner(cube) == 0)
+				break;
 		}else if(!strcmp(command, "c") && cube->game_status == 0){
 			while(check_winner(cube) != 0){
 				sem_post(&sem);
+				sem_wait(&ui);
 			}
 		}else{
 		  fprintf(stderr, "unknown command %s\n", command);
@@ -337,7 +337,7 @@ int main(int argc, char** argv){
       exit(1);
     }
 
-//	size = teamA_size + teamB_size;
+	size = teamA_size + teamB_size;
 
   /* Creates the cube */
   cube = (struct cube *)malloc(sizeof(struct cube));
@@ -383,12 +383,12 @@ int main(int argc, char** argv){
   assert(cube->teamB_wizards);
 //	printf("Initializing wizards");
 
-	sem_init(&sem, 0, 1);
- 	sem_init(&ui, 0, 1);
-	sem_wait(&ui);			//Still causing deadlock on wizard.h have to figure out semaphore combo
+	sem_init(&sem, 0, 0);
+	sem_init(&ui, 0, 0);
 
  /* Team A */
   for (i = 0; i < teamA_size; i++){
+
       if ((wizard_descr = init_wizard(cube, 'A', i)) == NULL){
 			  fprintf(stderr, "Wizard initialization failed (Team A number %d)\n", i);
 			  exit(1);
@@ -399,7 +399,7 @@ int main(int argc, char** argv){
   /* Team B */
 
   for (i = 0; i < teamB_size; i++){
-      if ((wizard_descr = init_wizard(cube, 'B', i)) == NULL){
+    if ((wizard_descr = init_wizard(cube, 'B', i)) == NULL){
 	  fprintf(stderr, "Wizard initialization failed (Team B number %d)\n", i);
 	  exit(1);
 		}
@@ -408,6 +408,13 @@ int main(int argc, char** argv){
 
   //Fill in
 	//Double for loop to set the initial value of lock room to 1 if 2 wizards spawn in the room
+	for(i = 0; i < cube_size; i++){
+		for(j = 0; j < cube_size; j++){
+			if(room->wizards[0] != NULL && room->wizards[1] !=0)
+				room->lock = 1;
+		}		
+
+	}
 
   /* Goes in the interface loop */
   res = interface(cube);
