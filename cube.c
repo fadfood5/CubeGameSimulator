@@ -385,7 +385,6 @@ int main(int argc, char** argv){
 
 	sem_init(&sem, 0, 0);
 	sem_init(&ui, 0, 0);
-
  /* Team A */
   for (i = 0; i < teamA_size; i++){
 
