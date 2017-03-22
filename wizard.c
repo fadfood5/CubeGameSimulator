@@ -21,8 +21,6 @@ void *wizard_func(void *wizard_descr){
   oldroom = cube->rooms[self->x][self->y];
   assert(oldroom);
 
-
-
   /* Chooses the new room */
   newroom = choose_room(self);
 
@@ -110,12 +108,12 @@ void *wizard_func(void *wizard_descr){
 			kill_wizards(self);
 		}
 	}
-	sem_post(&ui); 
+	sem_post(&ui);
      /* Thinks about what to do next */
       dostuff();
 
       oldroom = newroom;
-      newroom = choose_room(self);	
+      newroom = choose_room(self);
     }
 
   return NULL;

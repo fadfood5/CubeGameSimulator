@@ -27,7 +27,7 @@ int threads = 0;
 pthread_t thr[1000];
 int counterA = 0;
 int counterB = 0;
-
+pthread_t allThreads[];
 
 void command_line_usage(){
   fprintf(stderr, "-size <size of cube> -teamA <size of team> -teamB <size of team> -seed <seed value>\n");
@@ -35,13 +35,17 @@ void command_line_usage(){
 
 void kill_wizards(struct wizard *w){
   //Fill in
+	for(int i = 0; i < threads; i++){
+		pthread_kill(&allThreads[threads], 0);
+		printf("killed lmao\n");
+	}
 	pthread_exit(NULL);
   return;
 }
 
 int check_winner(struct cube* cube){
   //Fill in
-  	counterA = 0;
+	counterA = 0;
 	counterB = 0;
 	int i, j;
 	for(i = 0; i < cube->teamA_size; i++){
@@ -178,6 +182,7 @@ struct wizard *init_wizard(struct cube* cube, char team, int id){
 	if(threads < size){
 
 		r = pthread_create(&thr[threads], NULL, (void*)(*wizard_func), (void *)w);
+		allThreads[threads] = &thr[threads];
 		threads++;
 		if(r){
 			printf("ERROR; Return code from pthread_create");
@@ -241,12 +246,12 @@ int interface(void *cube_ref){
 			if(check_winner(cube) == 1){
 				if(counterA >= cube->teamA_size){
 					printf("Team A lost!");
-					print_cube(cube);					
+					print_cube(cube);
 				}
 
 				else if(counterB >= cube->teamB_size){
 					printf("Team B lost!");
-					print_cube(cube);	
+					print_cube(cube);
 				}
 
 			}
@@ -368,6 +373,7 @@ int main(int argc, char** argv){
   /* Creates the cube */
   cube = (struct cube *)malloc(sizeof(struct cube));
   assert(cube);
+  allThreads[teamA_size+teamB_size+1];
   cube->size = cube_size;
   cube->game_status = -1;
 
@@ -431,7 +437,7 @@ int main(int argc, char** argv){
       cube->teamB_wizards[i] = wizard_descr;
   }
 
-  //Fill in 
+  //Fill in
 	//Double for loop to set the initial value of lock room to 1 if 2 wizards spawn in the room
 	for(i = 0; i < cube_size; i++){
 		for(j = 0; j < cube_size; j++){
